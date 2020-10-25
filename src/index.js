@@ -18,4 +18,4 @@ schedule.scheduleJob((rule)=>{
     }).catch(ex=>{
         console.log('sync error', ex)
     })
-})
+}) 
