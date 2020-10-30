@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", {value: true});
 var util = require('util')
+var https = require('https')
 const cfg = require('../../config.json');
 const { default: Axios } = require('axios');
-const { Int } = require('mssql');
 
 class midea {
     constructor(options) {
@@ -41,21 +41,52 @@ class midea {
             data:[]
         }
         for (var val in vals) {
+            var rec = vals[val]
             data.data.push({
                 dataType: 'TRANSACTION',
-                demandItemCode:val.custNo,
-                itemDescription:val.itemModel,
-                organizationCode:'M5',
-                qty:val.qty,
+                demandItemCode:rec.custNo,
+                itemDescription:rec.itemModel,
+                organizationCode:rec.category,
+                qty:rec.qty,
                 reference:'',
                 sourceBill:'',
                 sourceCode:'',
                 sourceId:timestamp,
-                supplyItemCode:val.itemNo,
+                supplyItemCode:rec.itemNo,
                 transactionDate:timestamp
             })
         }
-        var rst = await Axios.post(cfg.midea.url, data)
+        // console.log('post', JSON.stringify(data))
+        try{
+            /*
+            const ignoreSSL = axios.create({
+                httpsAgent: new https.Agent({
+                    rejectUnauthorized: false
+                })
+            })
+            ignoreSSL.get(cfg.midea.url)
+            */
+            const agent = new https.Agent({
+                rejectUnauthorized: false
+            })
+            //var rst = await Axios.post(cfg.midea.url, data)
+            var rst = await Axios.post(cfg.midea.url, data, {httpsAgent: agent})
+            /*
+            var config = {
+                method: 'post',
+                url: cfg.midea.url,
+                strictSSL: false,
+                headers: { 
+                    'Content-Type': 'application/json'
+                },
+                data : data
+            }
+            var rst = await Axios(config)
+            */
+            console.log('rst', rst)
+        }catch(ex){
+            console.log('ex', ex)
+        }
     }
 }
 

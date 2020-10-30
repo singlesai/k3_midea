@@ -3,8 +3,6 @@ var sc = require('./sync')
 var k3 = require('./k3/index')
 
 var sync = new sc()
-var k3Api = new k3()
-k3Api.init()
 sync.Inv().then(()=>{
 }).catch(ex=>{
     console.log('sync error', ex)
