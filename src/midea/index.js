@@ -44,7 +44,7 @@ class midea {
             var rec = vals[val]
             data.data.push({
                 dataType: 'TRANSACTION',
-                demandItemCode:rec.custNo,
+                demandItemCode:rec.custItemNo,
                 itemDescription:rec.itemModel,
                 organizationCode:rec.category,
                 qty:rec.qty,
@@ -83,7 +83,7 @@ class midea {
             }
             var rst = await Axios(config)
             */
-            console.log('rst', rst)
+            console.log('rst', data, rst)
         }catch(ex){
             console.log('ex', ex)
         }
