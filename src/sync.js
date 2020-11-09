@@ -14,7 +14,12 @@ class sync {
 
     async Inv() {
         var inv = await k3Api.getInv()
-        await mideaApi.sendInv(inv)
+        var rst = await mideaApi.sendInv(inv)
+        for(var idx in inv) {
+            inv[idx]['success'] = rst.detail[idx].retCode
+            inv[idx]['info'] = rst.detail[idx].msg
+        }
+        await k3Api.syncRet(inv)
     }
 }
 

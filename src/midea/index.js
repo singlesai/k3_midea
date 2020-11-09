@@ -83,6 +83,7 @@ class midea {
             }
             var rst = await Axios(config)
             */
+           return rst.data.data
             console.log('rst', data, rst)
         }catch(ex){
             console.log('ex', ex)

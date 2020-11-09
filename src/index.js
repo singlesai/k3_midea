@@ -8,6 +8,8 @@ var k3 = require('./k3/index')
 var cfg = require('../config.json')
 
 var app = express()
+var k3Api = new k3()
+k3Api.init()
 
 app.use(express.static(path.resolve(__dirname, '../vueclient/dist')))
 app.get('/vue/*', function(req,res){
@@ -28,8 +30,26 @@ app.get('/', function(req, res){
     res.end('test')
 })
 
-app.get('status', async function(req,res){
+app.get('/status', async function(req,res){
+    var filter = {}
+    filter.begTime = req.query['beg']
+    filter.endTime = req.query['end']
+    if(!filter.begTime) {
+        filter.begTime = '1900-01-01'
+    }
+    if(!filter.endTime) {
+        filter.endTime = '2100-01-01'
+    }
+    var rst = await k3Api.syncLog(filter)
+    res.end(JSON.stringify(rst))
+})
 
+app.get('/resync', async function(req,res){
+    var filter = {}
+    filter.id = req.query['id']
+    if(!filter.id) filter.id=0
+    var rst = await k3Api.reSync(filter)
+    res.end(JSON.stringify(rst))
 })
 
 var sync = new sc()

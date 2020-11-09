@@ -29,7 +29,6 @@
           </el-select>
           材料金额：{{data.amt}}
         </div>
-        <tree-table ref="recTree" :list.sync="data.dsp" :header="header" @actionFunc="actionFunc" @deleteFunc="deleteFunc" @handlerExpand="handlerExpand" @orderByFunc="orderByFunc"></tree-table>
       </el-tab-pane>
       <el-tab-pane v-for="(o,k) in data.categTotal" :key="k" :label='k' :name="k">
         <el-table :data="o" show-summary>
@@ -48,7 +47,6 @@
   </div>
 </template>
 <script>
-import treeTable from '@/components/TreeTable/tree-table.vue'
 import axios from 'axios'
 export default {
   mounted () {
@@ -91,12 +89,11 @@ export default {
     }
   },
   components: {
-    treeTable
   },
   methods: {
     async onQuery () {
-      // var url = '//127.0.0.1:8989/cost?material='+this.query.material+'&ord='+this.query.ord
-      var url = '/cost?material='+this.query.material+'&ord='+this.query.ord
+      var url = '//127.0.0.1:8989/cost?material='+this.query.material+'&ord='+this.query.ord
+      // var url = '/cost?material='+this.query.material+'&ord='+this.query.ord
       var rst = await axios.get(url)
       console.log(rst.data)
       this.query.categs = []
