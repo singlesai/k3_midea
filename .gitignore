@@ -2,3 +2,5 @@ node_modules
 vueclient/node_modules
 vueclient/dist
 .vscode
+*.rar
+*.zip
