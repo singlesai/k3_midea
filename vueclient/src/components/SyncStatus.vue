@@ -10,8 +10,9 @@
         end-placeholder="结束日期"
         @change="query">
       </el-date-picker>
+      <el-button v-loading="loading.sync" @click="sync">立即同步</el-button>
     </div>
-    <el-table :data="data.filter(data => !filter.str || data.FNumber.toLowerCase().includes(filter.str.toLowerCase()) || data.FName.toLowerCase().includes(filter.str.toLowerCase()) || data.FModel.toLowerCase().includes(filter.str.toLowerCase()))">
+    <el-table v-loading="loading.query" :data="data.filter(data => !filter.str || data.FNumber.toLowerCase().includes(filter.str.toLowerCase()) || data.FName.toLowerCase().includes(filter.str.toLowerCase()) || data.FModel.toLowerCase().includes(filter.str.toLowerCase()))">
       <el-table-column label="日期" prop="FSyncTime"></el-table-column>
       <el-table-column label="产品代码" prop="FNumber"></el-table-column>
       <el-table-column label="产品名称" prop="FName"></el-table-column>
@@ -37,12 +38,17 @@ export default {
   name: 'SyncStatus',
   data () {
     return {
-      url: '', // '//127.0.0.1:8089',
+      url: '//127.0.0.1:8089', // '', // 
       filter: {
         date: undefined,
         str: ''
       },
-      data: []
+      data: [],
+      dspData: [],
+      loading: {
+        query: false,
+        sync: false
+      }
     }
   },
   mounted () {
@@ -70,16 +76,29 @@ export default {
       return fmt; 
     },
     async query () {
+      this.loading.query = true
       var url = this.url+'/status?beg='+(this.filter.date?this.format(this.filter.date[0],'yyyy-MM-dd hh:mm:ss'):'')+'&end='+(this.filter.date?this.format(this.filter.date[1],'yyyy-MM-dd hh:mm:ss'):'')
       var rst = await axios.get(url)
       console.log(rst.data)
       this.data = rst.data
+      this.loading.query = false
+    },
+    async filter () {
+      this.dspData = data.filter(data => !filter.str || data.FNumber.toLowerCase().includes(filter.str.toLowerCase()) || data.FName.toLowerCase().includes(filter.str.toLowerCase()) || data.FModel.toLowerCase().includes(filter.str.toLowerCase()))
     },
     async handleEdit(idx, row) {
       var url = this.url+'/resync?id='+row.FItemID
       var rst = await axios.get(url)
       console.log(rst.data)
       row.FReSync = 1
+    },
+    async sync () {
+      this.loading.sync = true
+      var url = this.url+'/sync'
+      var rst = await axios.get(url)
+      console.log(rst.data)
+      this.$message(rst.data)
+      this.loading.sync = false
     }
   }
 }

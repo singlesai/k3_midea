@@ -1,5 +1,6 @@
 const fs = require('fs')
 var path = require('path')
+var url = require('url')
 var express = require('express')
 
 var schedule = require('node-schedule')
@@ -12,10 +13,6 @@ var k3Api = new k3()
 k3Api.init()
 
 app.use(express.static(path.resolve(__dirname, '../vueclient/dist')))
-app.get('/vue/*', function(req,res){
-    const html = fs.readFileSync(path.resolve(__dirname,'../vueclient/dist/index.html'), 'utf-8')
-    res.send(html)
-})
 
 app.all('*', (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -24,10 +21,6 @@ app.all('*', (req, res, next) => {
     res.header("X-Powered-By",' 3.2.1')
     res.header("Content-Type", "application/json;charset=utf-8");
     next();
-})
-
-app.get('/', function(req, res){
-    res.end('test')
 })
 
 app.get('/status', async function(req,res){
@@ -53,6 +46,15 @@ app.get('/resync', async function(req,res){
 })
 
 var sync = new sc()
+app.get('/sync', async function(req,res){
+    try {
+        var rst = await sync.Inv()
+        res.end(JSON.stringify(rst))
+    } catch(ex) {
+        res.end(JSON.stringify(ex))
+    }
+})
+
 sync.Inv().then(()=>{
 }).catch(ex=>{
     console.log('sync error', ex)
@@ -68,7 +70,7 @@ var server = app.listen(cfg.port, function(){
     rule.hour = times
     schedule.scheduleJob((rule)=>{
         sync.Inv().then(()=>{
-
+            console.log('sync success')
         }).catch(ex=>{
             console.log('sync error', ex)
         })

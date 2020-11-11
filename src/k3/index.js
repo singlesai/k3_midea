@@ -29,7 +29,7 @@ class k3 {
 
     async getInv() {
         var strSql = `
-        select i.* from
+        select distinct i.* from
         (select i.FItemID itemId,k3.fshortnumber custItemNo,case k2.fname when '大烤箱' then 'M23' else 'M19' end category,k1.fnumber itemNo,k1.fname itemName,k1.fmodel itemModel,sum(i.FQty) qty
         from icinventory i
             join t_icitemcustom k on k.fitemid=i.fitemid

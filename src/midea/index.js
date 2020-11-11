@@ -51,7 +51,7 @@ class midea {
                 reference:'',
                 sourceBill:'',
                 sourceCode:'',
-                sourceId:timestamp,
+                sourceId:timestamp+data.data.length,
                 supplyItemCode:rec.itemNo,
                 transactionDate:timestamp
             })
