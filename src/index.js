@@ -67,8 +67,9 @@ var server = app.listen(cfg.port, function(){
 
     var rule = new schedule.RecurrenceRule()
     var times = [1,3,5,7,9,11,13,15,17,19,21,23]
-    rule.hour = times
-    schedule.scheduleJob((rule)=>{
+    // rule.hour = times
+    rule.second=30
+    schedule.scheduleJob(rule, ()=>{
         sync.Inv().then(()=>{
             console.log('sync success')
         }).catch(ex=>{
